@@ -43,10 +43,124 @@ const MAP_NODES = [
   { id: 6, label: "🏔️", name: "Вершина мудрости", status: "locked", x: 50, y: 20 },
 ];
 
-const QUIZ = [
-  { q: "Как называется процесс превращения солнечного света в питание для растений?", answers: ["Фотосинтез", "Дыхание", "Испарение", "Рост"], correct: 0 },
-  { q: "Какая часть цветка производит пыльцу?", answers: ["Пестик", "Тычинка", "Лепесток", "Чашелистик"], correct: 1 },
-  { q: "Через какие структуры растения поглощают воду?", answers: ["Листья", "Стебель", "Корни", "Цветы"], correct: 2 },
+// ====== LESSON DATA ======
+type LessonSlide = { type: "text"; title: string; body: string; visual: string } | { type: "quiz"; q: string; answers: string[]; correct: number; hint: string; visual: string };
+
+const LESSONS_DATA: { id: number; title: string; icon: string; xp: number; slides: LessonSlide[] }[] = [
+  {
+    id: 1, title: "Фотосинтез", icon: "🌱", xp: 30,
+    slides: [
+      { type: "text", title: "Магия зелёного листа", visual: "☀️🌿", body: "Растения умеют делать еду из солнечного света! Этот удивительный процесс называется фотосинтез. Лист ловит свет, как маленькая солнечная панель." },
+      { type: "quiz", q: "Что нужно растению для фотосинтеза?", answers: ["☀️ Свет и вода", "🌙 Темнота", "❄️ Холод", "🔥 Огонь"], correct: 0, hint: "Посмотри на формулу: свет + вода + CO₂ = сахар + кислород", visual: "🌞💧🌿" },
+      { type: "text", title: "Зачем нужен хлорофилл?", visual: "🟢🍃", body: "Хлорофилл — это зелёный пигмент в листьях. Именно он поглощает солнечный свет и делает растения зелёными. Без него фотосинтез невозможен!" },
+      { type: "quiz", q: "Какой цвет листьев говорит о наличии хлорофилла?", answers: ["🟢 Зелёный", "🔴 Красный", "🔵 Синий", "🟡 Жёлтый"], correct: 0, hint: "Хлоро- от греч. «хлорос» — зелёный", visual: "🎨🌿" },
+    ]
+  },
+  {
+    id: 2, title: "Анатомия цветка", icon: "🌸", xp: 45,
+    slides: [
+      { type: "text", title: "Строение цветка", visual: "🌸🔍", body: "Цветок — это орган размножения растения. Он состоит из лепестков, тычинок, пестика и чашелистиков. Каждая часть выполняет свою роль в жизни растения." },
+      { type: "quiz", q: "Какая часть цветка производит пыльцу?", answers: ["🌺 Лепесток", "🔧 Тычинка", "🌿 Чашелистик", "🎯 Пестик"], correct: 1, hint: "Тычинка — мужской орган цветка, производит пыльцу", visual: "🌸⚗️" },
+      { type: "text", title: "Как происходит опыление?", visual: "🐝🌸", body: "Пчёлы и другие насекомые переносят пыльцу с цветка на цветок. Это называется опыление. Без него растения не смогут дать плоды и семена!" },
+      { type: "quiz", q: "Кто чаще всего опыляет цветы?", answers: ["🐟 Рыбы", "🐝 Пчёлы и бабочки", "🐊 Крокодилы", "🦔 Ежи"], correct: 1, hint: "Насекомые привлекаются ярким цветом и запахом цветков", visual: "🦋🌼" },
+    ]
+  },
+  {
+    id: 3, title: "Типы листьев", icon: "🍃", xp: 35,
+    slides: [
+      { type: "text", title: "Почему листья разные?", visual: "🍃🍂🌿", body: "Листья бывают самых разных форм — круглые, вытянутые, резные, игольчатые. Форма листа помогает растению выживать в разных условиях: собирать больше света или экономить воду." },
+      { type: "quiz", q: "Зачем хвойным деревьям иголки вместо листьев?", answers: ["Чтобы колоться", "💧 Экономить воду зимой", "🎨 Для красоты", "🐦 Защищаться от птиц"], correct: 1, hint: "Иглы теряют мало воды — это важно зимой и в засушливых местах", visual: "🌲❄️" },
+    ]
+  },
+  {
+    id: 4, title: "Водный цикл", icon: "🌊", xp: 40,
+    slides: [
+      { type: "text", title: "Путь воды в растении", visual: "💧🌱➡️☁️", body: "Вода поднимается от корней к листьям по специальным трубочкам — ксилеме. Потом часть воды испаряется через листья. Это называется транспирация — растение как бы «дышит» водой." },
+      { type: "quiz", q: "По каким структурам вода поднимается в растении?", answers: ["🌊 По поверхности", "🧪 По ксилеме", "💨 По воздуху", "🔥 Через огонь"], correct: 1, hint: "Ксилема — проводящая ткань растений, похожа на крохотные трубочки", visual: "🌿💧⬆️" },
+    ]
+  },
+  {
+    id: 5, title: "Экосистемы", icon: "🌳", xp: 60,
+    slides: [
+      { type: "text", title: "Растения и окружающий мир", visual: "🌍🌿🐾", body: "Растения — основа любой экосистемы. Они производят кислород, дают пищу животным, защищают почву от эрозии и регулируют климат. Без растений жизнь на Земле была бы невозможна!" },
+      { type: "quiz", q: "Что производят растения, делая воздух пригодным для дыхания?", answers: ["💨 Азот", "🔥 Углекислый газ", "✨ Кислород", "💧 Водород"], correct: 2, hint: "В процессе фотосинтеза растения поглощают CO₂ и выделяют O₂", visual: "🌳💨😊" },
+    ]
+  },
+];
+
+// ====== GAME DATA (rich visual questions) ======
+type GameQuestion = {
+  type: "choice" | "match" | "spot";
+  scene: string;
+  sceneAnim?: string;
+  q: string;
+  answers: string[];
+  correct: number;
+  explanation: string;
+  xp: number;
+};
+
+const GAME_QUESTIONS: GameQuestion[] = [
+  {
+    type: "choice",
+    scene: "🌿🌞💧",
+    sceneAnim: "animate-float",
+    q: "Что происходит с растением на этой картинке?",
+    answers: ["🌱 Фотосинтез", "🍂 Увядание", "🌊 Затопление", "❄️ Замерзание"],
+    correct: 0,
+    explanation: "Растение под солнцем с водой проводит фотосинтез — превращает свет и воду в пищу!",
+    xp: 20,
+  },
+  {
+    type: "choice",
+    scene: "🐝➡️🌸➡️🌺",
+    sceneAnim: "animate-bounce-gentle",
+    q: "Что делает пчела на этом рисунке?",
+    answers: ["🍯 Делает мёд", "💐 Опыляет цветок", "😴 Отдыхает", "🎨 Раскрашивает"],
+    correct: 1,
+    explanation: "Пчела переносит пыльцу — это опыление! Без пчёл большинство цветов не дадут плодов.",
+    xp: 25,
+  },
+  {
+    type: "spot",
+    scene: "🌳\n🌿🌿🌿\n🌱🌱🌱\n🍄🌸🌼",
+    sceneAnim: "",
+    q: "Какой организм на этой картинке НЕ является растением?",
+    answers: ["🌸 Цветок", "🌳 Дерево", "🍄 Гриб", "🌿 Трава"],
+    correct: 2,
+    explanation: "Грибы — отдельное царство! Они не растения и не животные. У них нет хлорофилла.",
+    xp: 30,
+  },
+  {
+    type: "choice",
+    scene: "🌵🏜️☀️",
+    sceneAnim: "animate-float",
+    q: "Как кактус выживает без воды в пустыне?",
+    answers: ["🧙 Магией", "💧 Запасает воду в стебле", "🍃 Пьёт росу", "🤐 Не выживает"],
+    correct: 1,
+    explanation: "Кактус накапливает воду в толстом стебле! Это помогает ему выживать месяцами без дождя.",
+    xp: 25,
+  },
+  {
+    type: "match",
+    scene: "🌱➡️🌿➡️🌳",
+    sceneAnim: "animate-bounce-gentle",
+    q: "Как называется этот процесс у растения?",
+    answers: ["🔄 Рост", "💤 Сон", "🌊 Плавание", "✈️ Полёт"],
+    correct: 0,
+    explanation: "Рост растений — это удивительный процесс! За несколько лет маленький росток превращается в огромное дерево.",
+    xp: 20,
+  },
+  {
+    type: "choice",
+    scene: "🍂🍁🌡️",
+    sceneAnim: "",
+    q: "Почему листья деревьев желтеют осенью?",
+    answers: ["🎨 Художник покрасил", "☀️ Хлорофилл разрушается", "🌧️ От дождя", "🐛 Гусеницы съели"],
+    correct: 1,
+    explanation: "Осенью хлорофилл распадается, и становятся видны жёлтые и красные пигменты, которые были скрыты под зелёным.",
+    xp: 30,
+  },
 ];
 
 function Particles() {
@@ -189,15 +303,143 @@ function HomePage({ setPage }: { setPage: (p: Page) => void }) {
   );
 }
 
+function LessonView({ lessonId, onBack }: { lessonId: number; onBack: () => void }) {
+  const lesson = LESSONS_DATA.find(l => l.id === lessonId)!;
+  const [slideIdx, setSlideIdx] = useState(0);
+  const [selected, setSelected] = useState<number | null>(null);
+  const [showHint, setShowHint] = useState(false);
+  const [done, setDone] = useState(false);
+  const [correctCount, setCorrectCount] = useState(0);
+
+  const slide = lesson.slides[slideIdx];
+  const total = lesson.slides.length;
+  const isLast = slideIdx === total - 1;
+
+  const handleNext = () => {
+    if (isLast) { setDone(true); return; }
+    setSlideIdx(i => i + 1);
+    setSelected(null);
+    setShowHint(false);
+  };
+
+  const handleAnswer = (i: number) => {
+    if (selected !== null) return;
+    setSelected(i);
+    if (slide.type === "quiz" && i === slide.correct) setCorrectCount(c => c + 1);
+  };
+
+  if (done) {
+    return (
+      <div className="animate-scale-in flex flex-col items-center gap-5 py-6">
+        <div className="text-6xl animate-float">🎓</div>
+        <div className="text-center">
+          <h2 className="font-nunito font-black text-2xl text-white mb-1">Урок завершён!</h2>
+          <p className="text-green-400">{lesson.title}</p>
+        </div>
+        <div className="magic-card p-5 w-full text-center space-y-3">
+          <div className="text-4xl font-black text-yellow-400 glow-gold">+{lesson.xp} XP</div>
+          <div className="text-green-400 text-sm">Правильных ответов: {correctCount} из {lesson.slides.filter(s => s.type === "quiz").length}</div>
+          <XPBar current={correctCount} max={Math.max(1, lesson.slides.filter(s => s.type === "quiz").length)} />
+        </div>
+        <button onClick={onBack} className="btn-magic px-8 py-3">← Вернуться к урокам</button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="animate-fade-in space-y-4">
+      <div className="flex items-center gap-3">
+        <button onClick={onBack} className="w-10 h-10 rounded-2xl bg-green-900/50 border border-green-700/30 flex items-center justify-center">
+          <Icon name="ChevronLeft" size={18} className="text-green-400" />
+        </button>
+        <div className="flex-1">
+          <div className="font-nunito font-black text-white">{lesson.icon} {lesson.title}</div>
+          <div className="text-xs text-green-600">Шаг {slideIdx + 1} из {total}</div>
+        </div>
+        <div className="text-xs font-bold text-yellow-500">+{lesson.xp} XP</div>
+      </div>
+
+      <div className="flex gap-1.5">
+        {lesson.slides.map((_, i) => (
+          <div key={i} className={`flex-1 h-1.5 rounded-full transition-all duration-500 ${
+            i < slideIdx ? "bg-green-500" : i === slideIdx ? "bg-purple-400" : "bg-green-900"
+          }`} />
+        ))}
+      </div>
+
+      {slide.type === "text" && (
+        <div className="space-y-4">
+          <div className="magic-card p-6 text-center">
+            <div className="text-6xl mb-3 animate-float">{slide.visual}</div>
+            <h3 className="font-nunito font-black text-xl text-white mb-3">{slide.title}</h3>
+            <p className="text-green-300 leading-relaxed">{slide.body}</p>
+          </div>
+          <button onClick={handleNext} className="btn-magic w-full py-3">
+            {isLast ? "🎓 Завершить урок" : "Дальше →"}
+          </button>
+        </div>
+      )}
+
+      {slide.type === "quiz" && (
+        <div className="space-y-4">
+          <div className="magic-card p-5 text-center">
+            <div className="text-5xl mb-2">{slide.visual}</div>
+            <div className="text-xs text-purple-400 font-bold mb-2">❓ ВОПРОС</div>
+            <p className="font-nunito font-bold text-lg text-white leading-snug">{slide.q}</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            {slide.answers.map((ans, i) => {
+              let cls = "p-4 rounded-2xl border font-nunito font-bold text-sm transition-all duration-300 text-center ";
+              if (selected === null) cls += "magic-card hover:border-green-500/60 cursor-pointer text-green-100";
+              else if (i === slide.correct) cls += "border-green-400/80 bg-green-900/40 text-green-200";
+              else if (i === selected) cls += "border-red-500/50 bg-red-900/20 text-red-400";
+              else cls += "magic-card opacity-40 text-green-700 cursor-default";
+              return (
+                <button key={i} className={cls} onClick={() => handleAnswer(i)}>
+                  <div className="text-2xl mb-1">{ans.split(" ")[0]}</div>
+                  <div>{ans.split(" ").slice(1).join(" ")}</div>
+                </button>
+              );
+            })}
+          </div>
+
+          {selected !== null && (
+            <div className={`p-4 rounded-2xl border animate-fade-in ${selected === slide.correct ? "border-green-500/50 bg-green-900/20" : "border-orange-500/50 bg-orange-900/10"}`}>
+              <div className="font-bold text-sm mb-1 flex items-center gap-2">
+                {selected === slide.correct ? <span className="text-green-400">✅ Верно!</span> : <span className="text-orange-400">💡 Почти!</span>}
+              </div>
+              <p className="text-sm text-green-400">{slide.hint}</p>
+            </div>
+          )}
+
+          {selected === null && (
+            <button onClick={() => setShowHint(!showHint)} className="text-xs text-green-700 hover:text-green-500 transition-colors w-full text-center">
+              {showHint ? "Скрыть" : "💡 Показать подсказку"}
+            </button>
+          )}
+          {showHint && selected === null && (
+            <div className="p-3 rounded-xl bg-yellow-900/20 border border-yellow-700/30 text-xs text-yellow-300 animate-fade-in">{slide.hint}</div>
+          )}
+
+          {selected !== null && (
+            <button onClick={handleNext} className="btn-magic w-full py-3">
+              {isLast ? "🎓 Завершить урок" : "Следующий шаг →"}
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function LearnPage() {
-  const [active, setActive] = useState(0);
-  const lessons = [
-    { icon: "🌱", title: "Фотосинтез", subtitle: "Как растения питаются", duration: "5 мин", xp: 30, done: true },
-    { icon: "🌸", title: "Анатомия цветка", subtitle: "Строение цветущих растений", duration: "8 мин", xp: 45, done: true },
-    { icon: "🍃", title: "Типы листьев", subtitle: "Формы и функции листьев", duration: "6 мин", xp: 35, done: false },
-    { icon: "🌊", title: "Водный цикл", subtitle: "Движение воды в растениях", duration: "7 мин", xp: 40, done: false },
-    { icon: "🌳", title: "Экосистемы", subtitle: "Растения в природе", duration: "10 мин", xp: 60, done: false },
-  ];
+  const [activeLessonId, setActiveLessonId] = useState<number | null>(null);
+  const doneLessons = [1, 2];
+
+  if (activeLessonId !== null) {
+    return <LessonView lessonId={activeLessonId} onBack={() => setActiveLessonId(null)} />;
+  }
 
   return (
     <div className="animate-fade-in space-y-4">
@@ -208,45 +450,40 @@ function LearnPage() {
       <div className="magic-card p-4">
         <div className="flex justify-between text-sm mb-2">
           <span className="text-green-300 font-bold">Прогресс курса</span>
-          <span className="text-green-500">2/5 уроков</span>
+          <span className="text-green-500">{doneLessons.length}/{LESSONS_DATA.length} уроков</span>
         </div>
-        <XPBar current={2} max={5} />
+        <XPBar current={doneLessons.length} max={LESSONS_DATA.length} />
       </div>
       <div className="space-y-3">
-        {lessons.map((l, i) => (
-          <div key={i} onClick={() => setActive(i)} className={`plant-card transition-all ${active === i ? "border-green-500/60 shadow-[0_0_20px_rgba(34,197,94,0.2)]" : ""}`}>
-            <div className="flex items-center gap-4">
-              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${l.done ? "bg-green-900/50" : "bg-purple-900/50"}`}>
-                {l.done ? "✅" : l.icon}
-              </div>
-              <div className="flex-1">
-                <div className="font-bold text-white flex items-center gap-2">
-                  {l.title}
-                  {active === i && <span className="text-purple-400 text-xs animate-pulse">● Активный</span>}
+        {LESSONS_DATA.map((l) => {
+          const done = doneLessons.includes(l.id);
+          const locked = !done && l.id > (Math.max(...doneLessons) + 1);
+          return (
+            <div key={l.id} className={`plant-card transition-all ${locked ? "opacity-50" : ""}`}
+              onClick={() => !locked && setActiveLessonId(l.id)}>
+              <div className="flex items-center gap-4">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-2xl ${
+                  done ? "bg-green-900/50" : locked ? "bg-green-950/80" : "bg-purple-900/50"
+                }`}>
+                  {done ? "✅" : locked ? "🔒" : l.icon}
                 </div>
-                <div className="text-sm text-green-500">{l.subtitle}</div>
-                <div className="flex gap-3 mt-1">
-                  <span className="text-xs text-green-600">⏱ {l.duration}</span>
-                  <span className="text-xs text-yellow-600">+{l.xp} XP</span>
-                </div>
-              </div>
-              <div>
-                {l.done ? (
-                  <span className="text-2xl">✅</span>
-                ) : (
-                  <div className="w-10 h-10 rounded-full bg-green-900/30 border border-green-700/30 flex items-center justify-center">
-                    <Icon name="ChevronRight" size={16} className="text-green-500" />
+                <div className="flex-1">
+                  <div className="font-bold text-white">{l.title}</div>
+                  <div className="flex gap-3 mt-1">
+                    <span className="text-xs text-green-600">📖 {l.slides.length} шагов</span>
+                    <span className="text-xs text-yellow-600">+{l.xp} XP</span>
                   </div>
+                </div>
+                {!locked && !done && (
+                  <button className="btn-magic px-4 py-2 text-xs whitespace-nowrap" onClick={(e) => { e.stopPropagation(); setActiveLessonId(l.id); }}>
+                    🚀 Начать
+                  </button>
                 )}
+                {done && <span className="text-green-400 text-sm font-bold">Пройдено</span>}
               </div>
             </div>
-            {active === i && !l.done && (
-              <div className="mt-3 pt-3 border-t border-green-800/40">
-                <button className="btn-magic w-full py-2.5 text-sm">🚀 Начать урок</button>
-              </div>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
@@ -255,87 +492,136 @@ function LearnPage() {
 function GamePage() {
   const [qIdx, setQIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
-  const [score, setScore] = useState(0);
+  const [totalXp, setTotalXp] = useState(0);
   const [done, setDone] = useState(false);
+  const [showExplain, setShowExplain] = useState(false);
 
-  const q = QUIZ[qIdx];
+  const q = GAME_QUESTIONS[qIdx];
+  const totalQ = GAME_QUESTIONS.length;
 
   const handleAnswer = (i: number) => {
     if (selected !== null) return;
     setSelected(i);
-    if (i === q.correct) setScore(s => s + 1);
-    setTimeout(() => {
-      if (qIdx + 1 < QUIZ.length) { setQIdx(idx => idx + 1); setSelected(null); }
-      else setDone(true);
-    }, 1000);
+    setShowExplain(true);
+    if (i === q.correct) setTotalXp(x => x + q.xp);
   };
 
-  const restart = () => { setQIdx(0); setSelected(null); setScore(0); setDone(false); };
+  const handleNext = () => {
+    if (qIdx + 1 < totalQ) {
+      setQIdx(idx => idx + 1);
+      setSelected(null);
+      setShowExplain(false);
+    } else {
+      setDone(true);
+    }
+  };
+
+  const restart = () => { setQIdx(0); setSelected(null); setTotalXp(0); setDone(false); setShowExplain(false); };
 
   if (done) {
+    const maxXp = GAME_QUESTIONS.reduce((s, q) => s + q.xp, 0);
+    const pct = Math.round((totalXp / maxXp) * 100);
     return (
-      <div className="animate-scale-in flex flex-col items-center gap-6 py-8">
-        <div className="text-7xl animate-float">{score === QUIZ.length ? "🏆" : score >= 2 ? "⭐" : "🌱"}</div>
+      <div className="animate-scale-in flex flex-col items-center gap-5 py-6">
+        <div className="text-7xl animate-float">{pct === 100 ? "🏆" : pct >= 60 ? "⭐" : "🌱"}</div>
         <div className="text-center">
-          <h2 className="font-nunito font-black text-3xl text-white mb-2">
-            {score === QUIZ.length ? "Превосходно!" : score >= 2 ? "Отлично!" : "Продолжай!"}
+          <h2 className="font-nunito font-black text-3xl text-white mb-1">
+            {pct === 100 ? "Мастер ботаники!" : pct >= 60 ? "Отлично!" : "Продолжай учиться!"}
           </h2>
-          <p className="text-green-400">Правильных: {score} из {QUIZ.length}</p>
+          <p className="text-green-400">Результат: {pct}%</p>
         </div>
-        <div className="magic-card p-6 w-full text-center">
-          <div className="text-4xl font-black text-yellow-400 glow-gold mb-1">+{score * 25} XP</div>
-          <p className="text-green-500 text-sm">Получено опыта</p>
-          <div className="mt-3"><XPBar current={score} max={QUIZ.length} /></div>
+        <div className="magic-card p-5 w-full text-center space-y-3">
+          <div className="text-5xl font-black text-yellow-400 glow-gold">+{totalXp} XP</div>
+          <p className="text-green-500 text-sm">из {maxXp} возможных</p>
+          <XPBar current={totalXp} max={maxXp} />
         </div>
-        <button onClick={restart} className="btn-magic px-8 py-3">🔄 Играть снова</button>
+        <button onClick={restart} className="btn-magic px-8 py-3 text-white">🔄 Играть снова</button>
       </div>
     );
   }
 
+  const isCorrect = selected !== null && selected === q.correct;
+
   return (
-    <div className="animate-fade-in space-y-5">
+    <div className="animate-fade-in space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-nunito font-black text-2xl text-white glow-text">🎮 Квест</h1>
-          <p className="text-green-500 text-sm">Докажи знание ботаники!</p>
+          <p className="text-green-500 text-sm">Угадай, что происходит!</p>
         </div>
         <div className="magic-card px-4 py-2 text-center">
-          <div className="font-black text-yellow-400 text-lg">{score}</div>
-          <div className="text-xs text-green-600">очки</div>
+          <div className="font-black text-yellow-400 text-lg">{totalXp}</div>
+          <div className="text-xs text-green-600">XP</div>
         </div>
       </div>
-      <div className="flex gap-2 justify-center">
-        {QUIZ.map((_, i) => (
-          <div key={i} className={`h-2 rounded-full transition-all duration-300 ${i < qIdx ? "bg-green-500 w-8" : i === qIdx ? "bg-purple-400 w-12" : "bg-green-900 w-8"}`} />
+
+      <div className="flex gap-1.5">
+        {GAME_QUESTIONS.map((_, i) => (
+          <div key={i} className={`flex-1 h-2 rounded-full transition-all duration-500 ${
+            i < qIdx ? "bg-green-500" : i === qIdx ? "bg-purple-400" : "bg-green-900"
+          }`} />
         ))}
       </div>
-      <div className="magic-card p-5">
-        <div className="text-xs text-green-600 mb-2 font-bold">ВОПРОС {qIdx + 1} ИЗ {QUIZ.length}</div>
+
+      {/* Visual scene card */}
+      <div className="magic-card p-5 text-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-5" style={{ background: "radial-gradient(circle, #a855f7 0%, transparent 70%)" }} />
+        <div className="text-xs text-purple-400 font-bold mb-3 tracking-widest">
+          {{ choice: "🔍 ЧТО ЗДЕСЬ ПРОИСХОДИТ?", match: "🔗 УГАДАЙ ПРОЦЕСС", spot: "🎯 НАЙДИ ЛИШНЕЕ" }[q.type]}
+        </div>
+        <div className={`text-5xl mb-2 leading-tight whitespace-pre-line ${q.sceneAnim || ""}`}
+          style={{ letterSpacing: "0.1em" }}>
+          {q.scene}
+        </div>
+        <div className="w-full h-px bg-green-800/40 my-3" />
         <p className="font-nunito font-bold text-lg text-white leading-snug">{q.q}</p>
+        <div className="mt-2 text-xs text-green-600">+{q.xp} XP за правильный ответ</div>
       </div>
-      <div className="space-y-3">
+
+      {/* Answers grid */}
+      <div className="grid grid-cols-2 gap-3">
         {q.answers.map((ans, i) => {
-          let style = "magic-card p-4 cursor-pointer w-full text-left font-nunito font-bold transition-all duration-300 ";
-          if (selected === null) style += "hover:border-green-500/60";
-          else if (i === q.correct) style += "border-green-400/80 bg-green-900/30";
-          else if (i === selected) style += "border-red-500/60 bg-red-900/20";
+          const emoji = ans.split(" ")[0];
+          const text = ans.split(" ").slice(1).join(" ");
+          let cls = "p-4 rounded-2xl border font-nunito font-bold text-sm transition-all duration-300 text-center flex flex-col items-center gap-1 ";
+          if (selected === null) {
+            cls += "magic-card hover:border-green-500/60 hover:scale-105 cursor-pointer text-green-100 active:scale-95";
+          } else if (i === q.correct) {
+            cls += "border-green-400/80 bg-green-900/40 text-green-200 scale-105";
+          } else if (i === selected) {
+            cls += "border-red-500/50 bg-red-900/20 text-red-400";
+          } else {
+            cls += "magic-card opacity-30 text-green-800 cursor-default";
+          }
           return (
-            <button key={i} className={style} onClick={() => handleAnswer(i)}>
-              <div className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black text-sm border ${
-                  selected === null ? "border-green-700/50 text-green-500" :
-                  i === q.correct ? "bg-green-600 border-green-400 text-white" :
-                  i === selected ? "bg-red-700 border-red-500 text-white" :
-                  "border-green-800/30 text-green-800"
-                }`}>
-                  {selected !== null ? (i === q.correct ? "✓" : i === selected ? "✗" : String.fromCharCode(65+i)) : String.fromCharCode(65+i)}
-                </div>
-                <span className="text-green-100">{ans}</span>
-              </div>
+            <button key={i} className={cls} onClick={() => handleAnswer(i)}>
+              <span className="text-3xl">{emoji}</span>
+              <span>{text}</span>
+              {selected !== null && i === q.correct && <span className="text-green-400 text-lg">✓</span>}
+              {selected !== null && i === selected && i !== q.correct && <span className="text-red-400 text-lg">✗</span>}
             </button>
           );
         })}
       </div>
+
+      {/* Explanation */}
+      {showExplain && (
+        <div className={`p-4 rounded-2xl border animate-fade-in ${isCorrect ? "border-green-500/50 bg-green-900/20" : "border-orange-500/40 bg-orange-900/10"}`}>
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xl">{isCorrect ? "✅" : "💡"}</span>
+            <span className={`font-bold ${isCorrect ? "text-green-400" : "text-orange-400"}`}>
+              {isCorrect ? `Верно! +${q.xp} XP` : "Не совсем..."}
+            </span>
+          </div>
+          <p className="text-sm text-green-300 leading-relaxed">{q.explanation}</p>
+        </div>
+      )}
+
+      {selected !== null && (
+        <button onClick={handleNext} className="btn-magic w-full py-3 text-white font-bold animate-fade-in">
+          {qIdx + 1 < totalQ ? "Следующий вопрос →" : "🏆 Посмотреть результат"}
+        </button>
+      )}
     </div>
   );
 }
